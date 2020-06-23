@@ -45,6 +45,9 @@ namespace EventCatalogApi.Migrations
                     b.Property<int>("EventTypeId")
                         .HasColumnType("int");
 
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(100)")
@@ -52,9 +55,6 @@ namespace EventCatalogApi.Migrations
 
                     b.Property<int>("Occupancy")
                         .HasColumnType("int");
-
-                    b.Property<string>("PictureUrl")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(5,2)");
