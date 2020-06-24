@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using EventCatalogApi.Data;
 using EventCatalogApi.Domain;
@@ -8,6 +10,7 @@ using EventCatalogApi.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
 
 namespace EventCatalogApi.Controllers
@@ -18,14 +21,14 @@ namespace EventCatalogApi.Controllers
     {
         private readonly CatalogContext _context;
         private readonly IConfiguration _config;
-        public EventController(CatalogContext context , IConfiguration config)
+        public EventController(CatalogContext context, IConfiguration config)
         {
             _context = context;
             _config = config;
         }
         [HttpGet("{items}")]
-        public  async Task<IActionResult> Items([FromQuery]int pageIndex = 0,
-            [FromQuery]int pageSize = 6)
+        public async Task<IActionResult> Items([FromQuery] int pageIndex = 0,
+            [FromQuery] int pageSize = 6)
         {
             var itemsCount = await _context.EventDetails.LongCountAsync();
             var items = await _context.EventDetails
@@ -33,7 +36,7 @@ namespace EventCatalogApi.Controllers
                 .Skip(pageIndex * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
-             items = ChangePictureUrl(items);
+            items = ChangePictureUrl(items);
 
             var model = new PaginatedItemsViewModel<EventDetails>
             {
@@ -54,7 +57,7 @@ namespace EventCatalogApi.Controllers
                 "http://externalcatalogbaseurltobereplaced", _config["ExternalCatalogBaseUrl"]));
             return items;
         }
-        [HttpGet ("[action]")]
+        [HttpGet("[action]")]
         public async Task<IActionResult> EventTypes()
         {
             var types = await _context.EventTypes.ToListAsync();
@@ -64,7 +67,8 @@ namespace EventCatalogApi.Controllers
         [HttpGet("[action]")]
         public async Task<IActionResult> EventLocations()
         {
-            var locations = await _context.EventLocations.ToListAsync();
+            var locations = await _context.EventLocations
+                .ToListAsync();
             return Ok(locations);
 
         }
@@ -75,9 +79,11 @@ namespace EventCatalogApi.Controllers
             [FromQuery] int pageIndex = 0,
             [FromQuery] int pageSize = 6)
         {
-            var query = (IQueryable<EventDetails>)_context.EventDetails;
+            var query = (IQueryable<EventDetails>)_context.EventDetails
+                .Include(c => c.EventType)
+                .Include(c => c.EventLocation);
 
-            if(eventTypeId.HasValue)
+            if (eventTypeId.HasValue)
             {
                 query = query.Where(c => c.EventTypeId == eventTypeId);
             }
@@ -101,26 +107,56 @@ namespace EventCatalogApi.Controllers
                 PageSize = items.Count,
                 Count = itemsCount,
                 Data = items
-
             };
 
 
             return Ok(model);
 
+
         }
+        [HttpGet("[action]")]
+        public async Task<IActionResult> LocationCountDetails()
+        {
+            var groups = _context.EventDetails
+                .Include(c => c.EventLocation)
+                .Include(c => c.EventType)
+                .AsEnumerable()
+                .GroupBy(c => c.EventLocationId);
+
+            var detailsList = new List<EventLocationDetails>();
+            foreach (var group in groups)
+            {
+                var eventDetails = new EventLocationDetails
+                {
+                    Id = group.Key,                   
+                    Name = group.First().EventLocation.Location,
+                    Count = group.Count()
+                    //Type = group.AsEnumerable().ToList()
 
 
+                };
+                Console.WriteLine(eventDetails.Id + eventDetails.Name + eventDetails.Count);
+                detailsList.Add(eventDetails);
 
+                    
+                Console.WriteLine("Number of Events in " + group.Key + "  are " + group.Count());
+                foreach (var items in group)
+                    Console.WriteLine(items.EventTypeId);
 
+            }
+            return Ok(detailsList);
+        }
+    }
 
-
-
-
-
-
-
+class EventLocationDetails
+        {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public int Count { get; set; }
+        //  public List<EventDetails> Type { get; set; }
 
 
 
     }
+    
 }
