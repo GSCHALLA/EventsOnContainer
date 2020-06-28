@@ -15,9 +15,10 @@ Team Members:
 # Features 
 Microservice EventCatalog was created to the project, also added MSSSqL to load data for API's in microservice.
 Added few Pictures and nearly 5 different API's as part of 3a.
-Postman to show all the pictures and API output's.
+Using Postman to show all the picture contents and data API responses.
 
 Assignment 3a Demo Link :-
+https://youtu.be/aTpnwBt2oCA
 
 Kanban Board Link:
 https://github.com/KaurEkampreet/EventOnContainer/projects/1
