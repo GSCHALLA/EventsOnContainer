@@ -22,6 +22,7 @@ namespace EventCatalogApi.Data
                 catalogContext.EventLocations.AddRange(GetDefinedEventLocations());
                 catalogContext.SaveChanges();
 
+
             }
             if (!catalogContext.EventDetails.Any())
             {

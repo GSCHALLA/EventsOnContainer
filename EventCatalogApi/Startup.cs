@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
 
 namespace EventCatalogApi
 {
@@ -28,10 +29,28 @@ namespace EventCatalogApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            var databseServer = Configuration["DatabaseServer"];
+            var databaseName = Configuration["DatabaseName"];
+            var databaseUser = Configuration["DatabaseUser"];
+            var databasePassword = Configuration["DatabasePassword"];
+            var connectionString = $"Server ={databseServer};Database ={databaseName};User Id ={databaseUser};Password ={databasePassword}";
             services.AddDbContext<CatalogContext>(options =>
-            options.UseSqlServer(Configuration["ConnectionString"]));
-        }
+            options.UseSqlServer(connectionString));
 
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+                {
+                    Title = "EventsOnContainer - Event Catalog Api",
+                    Version = "v1",
+                    Description = "Event Catalog Microservice"
+
+                });
+            });
+        }
+        
+
+        
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
@@ -43,6 +62,12 @@ namespace EventCatalogApi
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseSwagger()
+                .UseSwaggerUI(e =>
+                {
+                    e.SwaggerEndpoint("/swagger/v1/swagger.json", "EventCatalogApi V1");
+                });
 
             app.UseAuthorization();
 

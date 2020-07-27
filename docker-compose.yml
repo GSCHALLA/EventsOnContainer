@@ -1,0 +1,55 @@
+version: '3.4'
+
+networks:
+  frontend:
+  backend:
+
+services:
+  event:
+    image: event/catalogapi
+    build:
+      context: .\EventCatalogApi
+      dockerfile: Dockerfile
+    environment:
+      ExternalCatalogBaseUrl: http://localhost:6820
+      DatabaseServer: mssqlserver
+      DatabaseName: EventDb
+      DatabaseUser: sa
+      DatabasePassword: EventApi(!)
+    ports:
+      - "6820:80"
+    container_name: eventcatalogapi
+    networks:
+      - frontend
+      - backend
+    depends_on:
+      - mssqlserver
+
+  eventwebmvc:
+    image: event/webmvc
+    build:
+      context: .\WebMvc
+      dockerfile: Dockerfile
+    environment:
+      EventUrl: http://event
+      ASPNETCORE_ENVIRONMENT: Development
+    ports:
+      - "6821:80"
+    container_name: eventwebmvc
+    networks:
+      - frontend
+    depends_on:
+      - eventC:\Users\saige\source\repos\EventsOnContainer\docker-compose.yml
+
+
+  mssqlserver:
+    image:  "microsoft/mssql-server-linux:latest"
+    environment:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: EventApi(!)
+    ports:
+      - "1450:1433" 
+    container_name: eventsqlserver
+    networks:
+      - backend
+

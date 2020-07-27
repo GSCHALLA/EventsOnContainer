@@ -10,6 +10,7 @@ using EventCatalogApi.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
 
@@ -56,7 +57,7 @@ namespace EventCatalogApi.Controllers
             items.ForEach(items => items.ImageUrl = items.ImageUrl.Replace(
                 "http://externalcatalogbaseurltobereplaced", _config["ExternalCatalogBaseUrl"]));
             return items;
-        }
+        }   
         [HttpGet("[action]")]
         public async Task<IActionResult> EventTypes()
         {
@@ -117,11 +118,16 @@ namespace EventCatalogApi.Controllers
         [HttpGet("[action]")]
         public async Task<IActionResult> LocationCountDetails()
         {
-            var groups = _context.EventDetails
+            var groups =  _context.EventDetails
                 .Include(c => c.EventLocation)
                 .Include(c => c.EventType)
                 .AsEnumerable()
-                .GroupBy(c => c.EventLocationId);
+                .GroupBy(c => c.EventLocationId)
+                ;
+                
+                
+
+            //Console.WriteLine(groups);
 
             var detailsList = new List<EventLocationDetails>();
             foreach (var group in groups)
@@ -131,8 +137,7 @@ namespace EventCatalogApi.Controllers
                     Id = group.Key,                   
                     Name = group.First().EventLocation.Location,
                     Count = group.Count()
-                    //Type = group.AsEnumerable().ToList()
-
+                    //Type = group.All
 
                 };
                 Console.WriteLine(eventDetails.Id + eventDetails.Name + eventDetails.Count);
@@ -153,9 +158,7 @@ class EventLocationDetails
         public int Id { get; set; }
         public string Name { get; set; }
         public int Count { get; set; }
-        //  public List<EventDetails> Type { get; set; }
-
-
+        public List<EventType> Type { get; set; }
 
     }
     
