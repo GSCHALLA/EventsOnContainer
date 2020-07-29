@@ -12,7 +12,7 @@
         </ol>
         <div class="carousel-inner" role="listbox">
             <div class="item active">
-                <img src="~/images/bannerimage1.jpg" alt="ASP.NET" class="img-responsive" />
+                <img src="~/images/bannerimage1.jpg" alt="ASP.NET" class="img-responsive"  width="678" height="338"/>
                 <div class="carousel-caption" role="option" color="#00FFFF";>
                     <p>
                         Inhale the future, exhale the past.
@@ -20,7 +20,7 @@
                 </div>
             </div>
             <div class="item">
-                <img src="~/images/bannerimage2.png" alt="Visual Studio" class="img-responsive" />
+                <img src="~/images/bannerimage2.png" alt="Visual Studio" class="img-responsive" width="678" height="338"/>
                 <div class="carousel-caption" role="option">
                     <p color ="#1B0804">
                         If you can DREAM it, you can DO it.
@@ -28,7 +28,7 @@
                 </div>
             </div>
             <div class="item">
-                <img src="~/images/bannerimage3.jpg" alt="Package Management" class="img-responsive" />
+                <img src="~/images/bannerimage3.jpg" alt="Package Management" class="img-responsive" width="678" height="338"/>
                 <div class="carousel-caption" role="option">
                     <p>
                         Break the rules to find a better YOU!
@@ -36,7 +36,7 @@
                 </div>
             </div>
             <div class="item">
-                <img src="~/images/bannerimage6.jpg" alt="Package Management" class="img-responsive" />
+                <img src="~/images/bannerimage6.jpg" alt="Package Management" class="img-responsive" width="678" height="338"/>
                 <div class="carousel-caption" role="option">
                     <p>
                         Music is an outburst of the soul.
@@ -54,19 +54,19 @@
     </a>
 </div>
 
-<section class="esh-event-filters">
-    <div class="container">
-        <form asp-action="Index" asp-controller="Event" method="post">
-            <label class="esh-event-label" data-title="location">
-                <select asp-for="@Model.LocationFilterApplied" asp-items="@Model.Locations" class="esh-event-filter"></select>
-            </label>
-            <label class="esh-event-label" data-title="type">
-                <select asp-for="@Model.TypesFilterApplied" asp-items="@Model.Types" class="esh-event-filter"></select>
-            </label>
-            <input class="esh-event-send" type="image" src="~/images/arrow-right.svg" />
-        </form>
-    </div>
-</section>
+    <section class="esh-event-filters">
+        <div class="container">
+            <form asp-action="Index" asp-controller="Event" method="post">
+                <label class="esh-event-label" data-title="Location">
+                    <select asp-for="@Model.LocationFilterApplied" asp-items="@Model.Locations" class="esh-event-filter"></select>
+                </label>
+                <label class="esh-event-label" data-title="EventType">
+                    <select asp-for="@Model.TypesFilterApplied" asp-items="@Model.Types" class="esh-event-filter"></select>
+                </label>
+                <input class="esh-event-send" type="image" src="~/images/arrow-right.svg" />
+            </form>
+        </div>
+    </section>
 <div class="container">
     @if (Model.EventDetails.Count() > 0)
     {
@@ -74,7 +74,7 @@
 
         <div class="esh-event-items row">
             @foreach (var eventDetails in Model.EventDetails)
-            {
+            {                                                              
                 <div class="esh-event-item col-md-4">
                     @Html.Partial("_product", eventDetails)
                 </div>

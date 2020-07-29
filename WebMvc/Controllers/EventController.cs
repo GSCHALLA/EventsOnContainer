@@ -31,7 +31,7 @@ namespace WebMvc.Controllers
                 {
 
                     ActualPage = page ?? 0,
-                    ItemsPerPage = itemsOnPage,
+                    ItemsPerPage = events.Data.Count,
                     TotalItems = events.Count,
                     TotalPages = (int)Math.Ceiling((Decimal)events.Count / itemsOnPage),
 

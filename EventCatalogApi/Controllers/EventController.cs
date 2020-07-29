@@ -81,8 +81,8 @@ namespace EventCatalogApi.Controllers
             [FromQuery] int pageSize = 6)
         {
             var query = (IQueryable<EventDetails>)_context.EventDetails
-                .Include(c => c.EventType)
-                .Include(c => c.EventLocation);
+                /*.Include(c => c.EventType)
+                .Include(c => c.EventLocation)*/;
 
             if (eventTypeId.HasValue)
             {

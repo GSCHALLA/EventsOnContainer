@@ -24,7 +24,7 @@ namespace WebMvc.Infrastructure
                 {
                     var locationQs = (location.HasValue) ? location.Value.ToString() : "";
                     var typeQs = (type.HasValue) ? type.Value.ToString() : "";
-                     filterQs = $"/type{typeQs}/location{locationQs}";
+                     filterQs = $"/type/{typeQs}/location/{locationQs}";
                 }
                 return $"{baseUri}items{filterQs}?pageIndex={page}&pageSize={take}";
             }

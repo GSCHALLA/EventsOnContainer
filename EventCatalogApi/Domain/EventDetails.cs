@@ -17,8 +17,8 @@ namespace EventCatalogApi.Domain
         public string Venue { get; set; }
         public String Date { get; set; }
         public int EventTypeId { get; set; }
-        public virtual EventType EventType { get; set; }
+        public  EventType EventType { get; set; }
         public int EventLocationId { get; set; }
-        public virtual EventLocation EventLocation { get; set; }
+        public  EventLocation EventLocation { get; set; }
     }
 }

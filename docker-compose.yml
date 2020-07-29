@@ -39,7 +39,7 @@ services:
     networks:
       - frontend
     depends_on:
-      - eventC:\Users\saige\source\repos\EventsOnContainer\docker-compose.yml
+      - event
 
 
   mssqlserver:
