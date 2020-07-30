@@ -32,6 +32,8 @@ services:
       dockerfile: Dockerfile
     environment:
       EventUrl: http://event
+      IdentityUrl: http://192.168.0.13:6750
+      CallBackUrl: http://localhost:6821
       ASPNETCORE_ENVIRONMENT: Development
     ports:
       - "6821:80"
@@ -40,6 +42,21 @@ services:
       - frontend
     depends_on:
       - event
+
+  tokenserver:
+    build:
+      context: .\TokenServiceApi
+      dockerfile: Dockerfile
+    environment:
+      Mvcclient: http://localhost:6821
+    ports:
+      - "6750:80"
+    container_name: eventtokenserviceapi
+    networks:
+      - backend
+      - frontend
+    depends_on:
+      - mssqlserver
 
 
   mssqlserver:
