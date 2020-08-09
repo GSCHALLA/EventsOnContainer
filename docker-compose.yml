@@ -32,8 +32,12 @@ services:
       dockerfile: Dockerfile
     environment:
       EventUrl: http://event
-      IdentityUrl: http://192.168.0.13:6750
+      CartUrl: http://cart
+      IdentityUrl: http://192.168.0.4:6750
       CallBackUrl: http://localhost:6821
+      OrderUrl: http://order
+      StripePublicKey: pk_test_51HE31oJziu13FFgPCnf0lBDaqEQok0fgFM0EqgO9msFLGFPMAfseACyb0G7PoqSTDOehUfxMCcCkAvtUCJxguEpb00Lmi7sMB2
+      StripePrivateKey: sk_test_51HE31oJziu13FFgPPbnjbg93tVZX4Sm9qYz9IlPoj7T00WUam1khqfacHhJ8H61hFjE32nrgEngDUtLrKUuDEqzV00YJJCzWxj
       ASPNETCORE_ENVIRONMENT: Development
     ports:
       - "6821:80"
@@ -42,6 +46,9 @@ services:
       - frontend
     depends_on:
       - event
+      - cart
+      - tokenserver
+      - order
 
   tokenserver:
     build:
@@ -58,6 +65,46 @@ services:
     depends_on:
       - mssqlserver
 
+  cart:
+    build:
+      context: .\CartApi
+      dockerfile: Dockerfile
+    image: event/cartapi
+    environment:
+      IdentityUrl: http://192.168.0.4:6750
+      ConnectionString: basket.data
+    ports:
+      - "6815:80"
+    container_name: cartapi
+    networks:
+      - backend
+      - frontend
+    depends_on:
+      - tokenserver
+      - basket.data
+
+  order:
+    build:
+      context: .\OrderApi
+      dockerfile: Dockerfile
+    image: event/orderapi
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      IdentityUrl: http://192.168.0.4:6750
+      DatabaseServer: mssqlserver
+      DatabaseName: OrdersDb
+      DatabaseUser: sa
+      DatabasePassword: EventApi(!)
+    ports:
+      - "6833:80"
+    container_name: orderapi
+    networks:
+      - backend
+      - frontend
+    depends_on:
+      - mssqlserver
+      - tokenserver
+
 
   mssqlserver:
     image:  "microsoft/mssql-server-linux:latest"
@@ -67,6 +114,14 @@ services:
     ports:
       - "1450:1433" 
     container_name: eventsqlserver
+    networks:
+      - backend
+
+  basket.data:
+    image: redis
+    container_name: basketdata
+    ports:
+      - "6080:6379"
     networks:
       - backend
 
