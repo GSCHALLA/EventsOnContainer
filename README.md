@@ -14,7 +14,7 @@ Integrate with the client
 * TokenService Microservice - Used to authenticate and authorize the users credentials to use eventbrite page. This is integrated with webmvc client.
 * Dockerised TokenService.
 
-# Assignment 3b -
+# Assignment 3c -
 Add rest of the microservices needed for the application to be functional
 Allow for communication between services via messaging (optional)
 Integrate with the front end
@@ -30,4 +30,4 @@ Dockerize
 
 
 # Project Demo
-https://www.youtube.com/watch?v=hHwUo0Z_1Ao
+https://www.youtube.com/watch?v=dYcrDf6fm1c
